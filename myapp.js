@@ -32,6 +32,15 @@ app.post("/replica", (req, res) => {
     res.send("Replicado");
 });
 
+app.get("/data/:key", (req, res) => {
+    const { key } = req.params;
+    if (dataStore.has(key)) {
+        res.json({ key, value: dataStore.get(key) });
+    } else {
+        res.status(404).send("Clave no encontrada");
+    }
+});
+
 // Heartbeat del líder
 if (PORT === "3001") {
     isLeader = true;
@@ -92,6 +101,12 @@ node myapp.js 3003
 http://localhost:3001/heartbeat ... OK
 
 lider actual: http://localhost:3003/store ...Dato almacenado
+{
+    "key": "usuario1",
+    "value": "Mario Fernando"
+}
+
+seguidores (3001 o 3002): http://localhost:3002/data/usuario1 ... 
 {
     "key": "usuario1",
     "value": "Mario Fernando"
